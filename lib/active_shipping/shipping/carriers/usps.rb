@@ -264,6 +264,7 @@ module ActiveMerchant
       end
 
       def world_rates(origin, destination, packages, options = {})
+        options[:origin_zip] = origin.zip
         request = build_world_rate_request(packages, destination, options)
         # never use test mode; rate requests just won't work on test servers
         parse_rate_response origin, destination, packages, commit(:world_rates, request, false), options
@@ -346,6 +347,7 @@ module ActiveMerchant
       def build_world_rate_request(packages, destination, options)
         country = COUNTRY_NAME_CONVERSIONS[destination.country.code(:alpha2).value] || destination.country.name
         request = XmlNode.new('IntlRateV2Request', :USERID => @options[:login]) do |rate_request|
+          rate_request << XmlNode.new("Revision", "2")
           packages.each_index do |id|
             p = packages[id]
             rate_request << XmlNode.new('Package', :ID => id.to_s) do |package|
@@ -371,6 +373,7 @@ module ActiveMerchant
               package << XmlNode.new('Length', "%0.2f" % [p.inches(:length), 0.01].max)
               package << XmlNode.new('Height', "%0.2f" % [p.inches(:height), 0.01].max)
               package << XmlNode.new('Girth', "%0.2f" % [p.inches(:girth), 0.01].max)
+              package << XmlNode.new('OriginZip', options[:origin_zip])
               if commercial_type = commercial_type(options)
                 package << XmlNode.new(COMMERCIAL_FLAG_NAME.fetch(commercial_type), 'Y')
               end
