@@ -622,8 +622,8 @@ module ActiveMerchant
       def request_url(action, request, test)
         scheme = 'https://'
         host = test ? TEST_DOMAINS[USE_SSL[action]] : LIVE_DOMAIN
-        resource = test ? TEST_RESOURCE : LIVE_RESOURCE
-        "#{scheme}#{host}/#{resource}?API=#{API_CODES[action]}&XML=#{request}"
+        resource = LIVE_RESOURCE
+        "https://production.shippingapis.com/#{resource}?API=#{API_CODES[action]}&XML=#{request}"
       end
 
       def strip_zip(zip)
