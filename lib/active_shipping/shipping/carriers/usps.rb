@@ -620,7 +620,7 @@ module ActiveMerchant
       end
 
       def request_url(action, request, test)
-        scheme = USE_SSL[action] ? 'https://' : 'http://'
+        scheme = 'https://'
         host = test ? TEST_DOMAINS[USE_SSL[action]] : LIVE_DOMAIN
         resource = test ? TEST_RESOURCE : LIVE_RESOURCE
         "#{scheme}#{host}/#{resource}?API=#{API_CODES[action]}&XML=#{request}"
